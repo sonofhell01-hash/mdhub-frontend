@@ -186,8 +186,12 @@ export function NocPanel({ technician }: NocPanelProps) {
                     <strong>{module.label}</strong>
                     <small className={STATE_BADGE_CLASS[module.state]}>{STATE_LABEL[module.state]}</small>
                   </div>
-                  <div className="noc-module-value">{moduleValueLabel(module)}</div>
+                  <div className="noc-module-value">
+                    {moduleValueLabel(module)}
+                    {module.total !== null && <span className="noc-module-value-label">hoje</span>}
+                  </div>
                   <div className="noc-module-meta">
+                    {module.total_all_time !== null && <span>{module.total_all_time} no total</span>}
                     {module.pending !== null && module.pending > 0 && <span>{module.pending} pendente(s)</span>}
                     {module.failed !== null && module.failed > 0 && <span className="noc-module-failed">{module.failed} falha(s)</span>}
                     {lastSynced && <span>Ultima sync: {lastSynced}</span>}

@@ -348,7 +348,10 @@ export type NocModuleState = "synced" | "syncing" | "stale" | "error" | "not_syn
 
 export type NocModule = {
   label: string;
+  // Total de HOJE (America/Sao_Paulo) - numero principal do card.
   total: number | null;
+  // Total acumulado (todo o historico da equipe), so pra contexto.
+  total_all_time: number | null;
   state: NocModuleState;
   checker_scope: "global" | "n/a";
   last_synced_at: string | null;

@@ -1631,6 +1631,14 @@ pre {
   color: var(--text);
 }
 
+.noc-module-value-label {
+  margin-left: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--faint);
+  text-transform: uppercase;
+}
+
 .noc-module-meta {
   display: flex;
   flex-wrap: wrap;
