@@ -9,7 +9,7 @@ const BACKEND_RETRY_DELAY_MS = 1000;
 
 type LoginPageProps = {
   initialEmail: string;
-  onLogin: (email: string, technician: Technician | null) => void;
+  onLogin: (email: string, technician: Technician | null, accessToken: string | null) => void;
 };
 
 export function LoginPage({ initialEmail, onLogin }: LoginPageProps) {
@@ -100,7 +100,7 @@ export function LoginPage({ initialEmail, onLogin }: LoginPageProps) {
       } else {
         localStorage.removeItem(REMEMBERED_LOGIN_KEY);
       }
-      onLogin(email, response.technician);
+      onLogin(email, response.technician, response.access_token || null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Falha no login.");
     } finally {

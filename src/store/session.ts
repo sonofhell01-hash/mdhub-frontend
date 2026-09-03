@@ -5,21 +5,23 @@ const STORAGE_KEY = "mdhub.session.v1";
 export type SessionState = {
   email: string;
   technician: Technician | null;
+  accessToken: string | null;
 };
 
 export function loadSession(): SessionState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      return { email: "", technician: null };
+      return { email: "", technician: null, accessToken: null };
     }
     const parsed = JSON.parse(raw) as SessionState;
     return {
       email: parsed.email || "",
-      technician: parsed.technician || null
+      technician: parsed.technician || null,
+      accessToken: parsed.accessToken || null
     };
   } catch {
-    return { email: "", technician: null };
+    return { email: "", technician: null, accessToken: null };
   }
 }
 

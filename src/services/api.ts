@@ -29,6 +29,19 @@ import type {
 const DEFAULT_API_BASE = import.meta.env.VITE_API_BASE_URL || "http://10.136.59.60:8766";
 const API_BASE_STORAGE_KEY = "mdhubfinal.apiBaseUrl.v1";
 
+// Token JWT do HUB (emitido por /auth/midiasimples/login quando o usuario
+// existe no banco). Mantido em memoria: quem persiste entre reloads e o
+// App, via store/session.ts + setAccessToken() na inicializacao.
+let accessToken: string | null = null;
+
+export function setAccessToken(token: string | null) {
+  accessToken = token || null;
+}
+
+export function getAccessToken() {
+  return accessToken;
+}
+
 function normalizeApiBaseUrl(value: string) {
   const trimmed = value.trim().replace(/\/+$/, "");
   if (!trimmed) {
@@ -56,6 +69,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${getApiBaseUrl()}${path}`, {
     headers: {
       "Content-Type": "application/json",
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       ...(init?.headers || {})
     },
     ...init
@@ -269,6 +283,8 @@ export const api = {
       technician_known: boolean;
       technician: Technician | null;
       user_name?: string | null;
+      access_token?: string | null;
+      token_type?: string | null;
     }>("/auth/midiasimples/login", {
       method: "POST",
       body: JSON.stringify({ email, password, remember })
