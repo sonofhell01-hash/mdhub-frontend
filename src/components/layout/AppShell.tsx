@@ -5,7 +5,6 @@ import {
   FileText,
   LayoutDashboard,
   LogOut,
-  MessageCircle,
   PlugZap,
   RefreshCcw,
   Settings,
@@ -30,7 +29,7 @@ const sections: Array<{ key: WorkspaceSection; label: string; icon: typeof Layou
   { key: "operacao", label: "Operacional", icon: LayoutDashboard },
   { key: "documentos", label: "Documentos", icon: FileText },
   { key: "integracoes", label: "Integracoes", icon: PlugZap },
-  { key: "whatsapp", label: "WhatsApp", icon: MessageCircle },
+  // Modulo WhatsApp escondido do menu a pedido do usuario (rota/tela continuam existindo).
   { key: "sync", label: "Sync", icon: RefreshCcw }
 ];
 
