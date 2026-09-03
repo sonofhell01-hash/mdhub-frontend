@@ -1656,3 +1656,16 @@ pre {
     grid-template-columns: 1fr;
   }
 }
+
+.spin {
+  animation: noc-spin 0.9s linear infinite;
+}
+
+@keyframes noc-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

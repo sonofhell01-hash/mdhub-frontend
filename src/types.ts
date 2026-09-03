@@ -5,6 +5,10 @@ export type Technician = {
   midiasimples_id: number;
   email: string;
   active: boolean;
+  // FK real de `usuarios.id` (Central NOC) - presente quando o tecnico ja
+  // esta cadastrado no banco (ver src/api/routes/auth.py). Usar isso, e so
+  // isso, para atribuir `documentos.usuario_id` ao criar qualquer documento.
+  usuario_id?: number | null;
 };
 
 export type OperationalResult = {

@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { AlertTriangle } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { AlertTriangle, RefreshCcw } from "lucide-react";
 import { api } from "../../services/api";
-import type { DocumentType, NocMeResponse, NocModule, NocModuleState, NocOverviewResponse } from "../../types";
+import type { DocumentType, NocMeResponse, NocModule, NocModuleState, NocOverviewResponse, Technician } from "../../types";
 
 // Ordem de exibicao dos modulos - casa com `NOC_MODULES` em
 // src/services/noc/overview.py no backend.
@@ -54,11 +54,16 @@ function moduleValueLabel(module: NocModule) {
   return module.state === "error" ? "Aguardando sincronizacao" : "Sem dados sincronizados";
 }
 
-export function NocPanel() {
+type NocPanelProps = {
+  technician: Technician | null;
+};
+
+export function NocPanel({ technician }: NocPanelProps) {
   const [me, setMe] = useState<NocMeResponse | null>(null);
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
   const [overview, setOverview] = useState<NocOverviewResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -71,12 +76,9 @@ export function NocPanel() {
       .catch((err) => setMessage(err instanceof Error ? err.message : "Falha ao carregar equipes da Central NOC."));
   }, []);
 
-  useEffect(() => {
-    if (!me) {
-      return;
-    }
+  const refreshOverview = useCallback(() => {
     setLoading(true);
-    api
+    return api
       .nocOverview(selectedTeamId)
       .then((data) => {
         setOverview(data);
@@ -84,7 +86,34 @@ export function NocPanel() {
       })
       .catch((err) => setMessage(err instanceof Error ? err.message : "Falha ao carregar a Central NOC."))
       .finally(() => setLoading(false));
-  }, [me, selectedTeamId]);
+  }, [selectedTeamId]);
+
+  useEffect(() => {
+    if (!me) {
+      return;
+    }
+    void refreshOverview();
+  }, [me, selectedTeamId, refreshOverview]);
+
+  async function syncNow() {
+    setSyncing(true);
+    try {
+      // Sincronizacao MidiaSimples e sob demanda aqui (nunca em polling
+      // curto/automatico) - a fonte e uma sessao autenticada por scraping,
+      // nao uma API oficial, entao repetir isso a cada poucos segundos
+      // arrisca invalidar a sessao ou sobrecarregar o MidiaSimples. Ver
+      // conversa com o usuario sobre a cadencia de sincronizacao.
+      if (technician?.email) {
+        await api.syncMidiaRats(technician.email, false);
+      }
+      await refreshOverview();
+      setMessage("Sincronizacao MidiaSimples executada agora.");
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Falha ao sincronizar com o MidiaSimples.");
+    } finally {
+      setSyncing(false);
+    }
+  }
 
   const canSwitch = Boolean(me?.can_switch_teams) && (me?.teams.length || 0) > 1;
 
@@ -111,6 +140,11 @@ export function NocPanel() {
         )}
 
         {!canSwitch && overview?.team && <small className="status-badge">{overview.team.code}</small>}
+
+        <button className="ghost-action" onClick={syncNow} disabled={syncing || loading}>
+          <RefreshCcw size={15} strokeWidth={1.9} className={syncing ? "spin" : undefined} />
+          {syncing ? "Sincronizando..." : "Atualizar agora"}
+        </button>
       </div>
 
       {message && <p className="operation-hint">{message}</p>}

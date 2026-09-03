@@ -120,17 +120,22 @@ export function HomePage({ technician, onLogout }: HomePageProps) {
         setStatus((current) => ({
           ...current,
           message: failed
-            ? `Checkers automaticos executados com ${failed} alerta(s). Proxima rodada em 30 min.`
-            : "Checkers automaticos executados. Proxima rodada em 30 min."
+            ? `Checkers automaticos executados com ${failed} alerta(s). Proxima rodada em 5 min.`
+            : "Checkers automaticos executados. Proxima rodada em 5 min."
         }));
       } finally {
         checkerRunningRef.current = false;
       }
     }
 
+    // Roda uma vez imediatamente ao abrir o app (nao so depois de 30 min) -
+    // sem isso, um RAT feito no MidiaSimples so aparecia na Central NOC meia
+    // hora depois de alguem abrir o HUB.
+    void runAutomaticCheckers();
+
     const timer = window.setInterval(() => {
       void runAutomaticCheckers();
-    }, 30 * 60 * 1000);
+    }, 5 * 60 * 1000);
 
     return () => window.clearInterval(timer);
   }, [technician?.email]);
@@ -268,7 +273,7 @@ export function HomePage({ technician, onLogout }: HomePageProps) {
         </>
       )}
 
-      {activeSection === "noc" && <NocPanel />}
+      {activeSection === "noc" && <NocPanel technician={technician} />}
       {activeSection === "documentos" && <DocumentsPanel technician={technician} />}
       {activeSection === "checkers" && (
         <>

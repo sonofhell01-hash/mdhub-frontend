@@ -243,7 +243,11 @@ function readFileAsDataUrl(file: File): Promise<EvidenceFile> {
 
 export function DocumentWizard({ type, result, technician, onClose, onCreated, preferredClosureRat = null }: DocumentWizardProps) {
   const dados = result.dados || {};
-  const usuarioId = dados.usuario_id ?? dados.midiasimples_id ?? dados.id;
+  // O responsavel pelo documento e SEMPRE o tecnico logado (Central NOC
+  // precisa disso pra agregar por equipe) - nunca os campos de `dados`, que
+  // descrevem o colaborador/ativo pesquisado, nao quem esta criando o
+  // documento. Ver Technician.usuario_id em src/api/routes/auth.py.
+  const usuarioId = technician?.usuario_id ?? undefined;
   const [manualMatricula, setManualMatricula] = useState(value(dados.matricula));
   const [manualNome, setManualNome] = useState(value(dados.nome));
   const [manualEmail, setManualEmail] = useState(value(dados.email));
