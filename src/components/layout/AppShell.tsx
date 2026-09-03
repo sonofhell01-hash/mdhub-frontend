@@ -6,13 +6,17 @@ import {
   LayoutDashboard,
   LogOut,
   PlugZap,
-  RefreshCcw,
   Settings,
+  Signal,
   UserRound
 } from "lucide-react";
 import type { SystemStatus, Technician } from "../../types";
 
-export type WorkspaceSection = "operacao" | "documentos" | "integracoes" | "whatsapp" | "sync" | "configuracoes";
+// Menu unico da Central NOC (README_IMPLEMENTACAO_NOC_POR_EQUIPES.md):
+// Central NOC, Consulta operacional, Documentos, Checkers e sync.
+// WhatsApp continua fora do menu (decisao confirmada com o usuario) -
+// a rota/tela seguem existindo, so nao aparecem na navegacao.
+export type WorkspaceSection = "noc" | "operacao" | "documentos" | "checkers" | "whatsapp" | "configuracoes";
 
 const APP_VERSION = "0.2.14";
 
@@ -26,11 +30,10 @@ type AppShellProps = {
 };
 
 const sections: Array<{ key: WorkspaceSection; label: string; icon: typeof LayoutDashboard }> = [
-  { key: "operacao", label: "Operacional", icon: LayoutDashboard },
+  { key: "noc", label: "Central NOC", icon: Signal },
+  { key: "operacao", label: "Consulta operacional", icon: LayoutDashboard },
   { key: "documentos", label: "Documentos", icon: FileText },
-  { key: "integracoes", label: "Integracoes", icon: PlugZap },
-  // Modulo WhatsApp escondido do menu a pedido do usuario (rota/tela continuam existindo).
-  { key: "sync", label: "Sync", icon: RefreshCcw }
+  { key: "checkers", label: "Checkers e sync", icon: PlugZap }
 ];
 
 export function AppShell({ technician, status, activeSection, onSectionChange, onLogout, children }: AppShellProps) {
@@ -90,7 +93,7 @@ export function AppShell({ technician, status, activeSection, onSectionChange, o
         <header className="topbar">
           <section className="page-title">
             <span>{currentSection.label}</span>
-            <h1>{currentSection.label === "Operacional" ? "Visao geral do ambiente." : currentSection.label}</h1>
+            <h1>{currentSection.key === "operacao" ? "Visao geral do ambiente." : currentSection.label}</h1>
           </section>
 
           <section className={online ? "status-pill online" : "status-pill warning"} aria-label="Status do sistema">

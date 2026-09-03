@@ -16,6 +16,7 @@ import { AppShell, type WorkspaceSection } from "../components/layout/AppShell";
 import { CheckersPanel } from "../components/checkers/CheckersPanel";
 import { DocumentsPanel } from "../components/documents/DocumentsPanel";
 import { GlobalSearch } from "../components/search/GlobalSearch";
+import { NocPanel } from "../components/noc/NocPanel";
 import { OperationalProfile } from "../components/status/OperationalProfile";
 import { SyncPanel } from "../components/sync/SyncPanel";
 import { SettingsPanel } from "../components/settings/SettingsPanel";
@@ -267,10 +268,15 @@ export function HomePage({ technician, onLogout }: HomePageProps) {
         </>
       )}
 
+      {activeSection === "noc" && <NocPanel />}
       {activeSection === "documentos" && <DocumentsPanel technician={technician} />}
-      {activeSection === "integracoes" && <CheckersPanel technician={technician} />}
+      {activeSection === "checkers" && (
+        <>
+          <CheckersPanel technician={technician} />
+          <SyncPanel />
+        </>
+      )}
       {activeSection === "whatsapp" && <WhatsAppPanel technician={technician} />}
-      {activeSection === "sync" && <SyncPanel />}
       {activeSection === "configuracoes" && <SettingsPanel />}
 
       {wizard && (result || wizard === "fechamento") && (

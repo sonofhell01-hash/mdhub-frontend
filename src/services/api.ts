@@ -10,6 +10,11 @@ import type {
   DocumentsResponse,
   FechamentoRatCandidatesResponse,
   MidiaSimplesRatSyncResponse,
+  NocAlertsResponse,
+  NocDocumentsResponse,
+  NocMeResponse,
+  NocOverviewResponse,
+  NocTeamsResponse,
   OperationalResult,
   SyncPendingResponse,
   SyncRunResponse,
@@ -289,5 +294,39 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ email, password, remember })
     });
+  },
+
+  nocMe() {
+    return request<NocMeResponse>("/noc/me");
+  },
+
+  nocTeams() {
+    return request<NocTeamsResponse>("/noc/teams");
+  },
+
+  nocOverview(teamId?: number | null) {
+    const suffix = teamId ? `?team_id=${teamId}` : "";
+    return request<NocOverviewResponse>(`/noc/overview${suffix}`);
+  },
+
+  nocAlerts(teamId?: number | null) {
+    const suffix = teamId ? `?team_id=${teamId}` : "";
+    return request<NocAlertsResponse>(`/noc/alerts${suffix}`);
+  },
+
+  nocDocuments(params: { teamId?: number | null; tipo?: string; status?: string; page?: number; pageSize?: number } = {}) {
+    const query = new URLSearchParams();
+    if (params.teamId) {
+      query.set("team_id", String(params.teamId));
+    }
+    if (params.tipo) {
+      query.set("type", params.tipo);
+    }
+    if (params.status) {
+      query.set("status", params.status);
+    }
+    query.set("page", String(params.page || 1));
+    query.set("page_size", String(params.pageSize || 25));
+    return request<NocDocumentsResponse>(`/noc/documents?${query.toString()}`);
   }
 };

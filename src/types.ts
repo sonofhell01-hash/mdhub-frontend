@@ -335,3 +335,85 @@ export type WhatsAppResetResponse = {
   deleted_history: number;
   deleted_documents: number;
 };
+
+// ---------------------------------------------------------------------------
+// Central NOC (agregacao por equipe) - ver src/api/routes/noc.py no backend.
+// ---------------------------------------------------------------------------
+
+export type NocModuleState = "synced" | "syncing" | "stale" | "error" | "not_synced";
+
+export type NocModule = {
+  label: string;
+  total: number | null;
+  state: NocModuleState;
+  checker_scope: "global" | "n/a";
+  last_synced_at: string | null;
+  pending: number | null;
+  failed: number | null;
+};
+
+export type NocAlert = {
+  type: string;
+  module: DocumentType | null;
+  message: string;
+  email?: string;
+};
+
+export type NocTeamRef = {
+  id: number;
+  name: string;
+  code: string;
+};
+
+export type NocMeResponse = {
+  user: {
+    id: number;
+    name: string;
+    email: string;
+    role: "tecnico" | "admin" | "gestor_noc";
+  };
+  teams: Array<NocTeamRef & { principal: boolean }>;
+  default_team_id: number | null;
+  can_switch_teams: boolean;
+};
+
+export type NocTeamsResponse = {
+  items: NocTeamRef[];
+};
+
+export type NocOverviewResponse = {
+  team: NocTeamRef | null;
+  scope: { role: "tecnico" | "admin" | "gestor_noc"; can_switch_teams: boolean };
+  technicians: {
+    active: number;
+    items: Array<{ id: number; nome: string; apelido: string | null; email: string; perfil_noc: string }>;
+  };
+  modules: Record<DocumentType, NocModule>;
+  alerts: NocAlert[];
+  generated_at: string;
+};
+
+export type NocDocumentSummary = {
+  id: number;
+  tipo: DocumentType;
+  numero_chamado: string | null;
+  midiasimples_id: string | null;
+  status: string;
+  usuario_id: number | null;
+  responsavel: string | null;
+  sync_pendente: boolean;
+  created_at: string | null;
+  enviado_em: string | null;
+};
+
+export type NocDocumentsResponse = {
+  items: NocDocumentSummary[];
+  page: number;
+  page_size: number;
+  total: number;
+};
+
+export type NocAlertsResponse = {
+  items: NocAlert[];
+  generated_at: string;
+};

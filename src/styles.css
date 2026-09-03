@@ -1573,3 +1573,86 @@ pre {
     animation-iteration-count: 1 !important;
   }
 }
+
+/* Central NOC (Etapa 5) */
+.status-badge.error {
+  border-color: var(--error-border);
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+
+.status-badge.muted {
+  border-color: var(--line);
+  background: var(--surface-subtle);
+  color: var(--faint);
+}
+
+.noc-team-select {
+  border: 1px solid var(--neutral-border);
+  border-radius: 999px;
+  background: var(--neutral-bg);
+  color: var(--neutral-text);
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.noc-module-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.noc-module-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  padding: 16px;
+}
+
+.noc-module-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.noc-module-card-head strong {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.noc-module-value {
+  margin-top: 10px;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.noc-module-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  color: var(--faint);
+  font-size: 12px;
+}
+
+.noc-module-failed {
+  color: var(--error-text);
+  font-weight: 600;
+}
+
+@media (max-width: 1100px) {
+  .noc-module-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .noc-module-grid {
+    grid-template-columns: 1fr;
+  }
+}
